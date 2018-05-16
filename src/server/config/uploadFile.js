@@ -18,7 +18,8 @@ module.exports = function(app, express, gfs, fsFile) {   // these params are are
         filename: temp, //filename to store in mongodb
         metadata: {
           username: req.session.passport.user,  //username from session, store more specs in here
-          songName: lowerSong
+          songName: req.body.songName,
+          lowerSong: lowerSong
         }
       });
       fs.createReadStream(`./uploadTemp/${temp}`).pipe(writestream);  // open a stream so we can start reading uploads
@@ -36,12 +37,12 @@ module.exports = function(app, express, gfs, fsFile) {   // these params are are
       lowerName = req.body.username.toLowerCase();
     }
     if (req.body.songName) {
-      lowerSong = req.body.songName;
+      lowerSong = req.body.songName.toLowerCase();
     }
     fsFile.find({
       filename: req.body.filename,
       'metadata.username': lowerName,
-      'metadata.songName': lowerSong
+      'metadata.lowerSong': lowerSong
     }).then(data => { //search db
       if (!data[0]) {
         console.log('file not in db');
@@ -82,12 +83,13 @@ module.exports = function(app, express, gfs, fsFile) {   // these params are are
     }
     gfs.files.update(
       {
-        'metadata.songName': lowerSong,
+        'metadata.lowerSong': lowerSong,
         'metadata.username': req.session.passport.user
       },
       { 
         $set: {
-          'metadata.songName': temp
+          'metadata.songName': temp,
+          'metadata.lowerSong': temp.toLowerCase()
         }
       }
     ).then(() => {
@@ -104,9 +106,13 @@ module.exports = function(app, express, gfs, fsFile) {   // these params are are
  */
 
   app.post('/removeSong', passportFile.isLoggedIn, (req, res) => {
+    let query;
+    if (req.body.songName) {
+      query = req.body.songName.toLowerCase();
+    }
     fsFile.remove({
       'metadata.username': req.session.passport.user,
-      'metadata.songName': req.body.songName
+      'metadata.lowerSong': query
     }).then(() => {
       res.end();
     }).catch(err => {
@@ -139,11 +145,11 @@ module.exports = function(app, express, gfs, fsFile) {   // these params are are
     }
     var temp = {};
     fsFile.find({
-      'metadata.songName': query
+      'metadata.lowerSong': {'$regex': query}
     }).then(songdata => { //find songs
       temp.songs = songdata;
       fsFile.find({
-        'metadata.username': query
+        'metadata.username': {'$regex': query}
       }).then(userdata => { //find users
         temp.users = userdata.length > 0 ? query : null;
         res.send(temp);

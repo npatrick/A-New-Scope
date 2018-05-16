@@ -74,10 +74,8 @@ and execute on a whole new stack.
  */
 passport.use('signup', new LocalStrategy((username, password, done) => {
   const lowerName = username.toLowerCase();
-  console.log('DID I GET A USERNAME?', lowerName);
   process.nextTick(() => {
     User.find({'username': lowerName}, (err, data) => {
-      console.log('This line is clear')
       if (!data.length) {
         const temp = new User({ //create a new user to store in db
           username: lowerName
