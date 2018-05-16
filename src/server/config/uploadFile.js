@@ -9,12 +9,16 @@ module.exports = function(app, express, gfs, fsFile) {   // these params are are
     if (!req.files[0]) {
       res.redirect('/#/user');
     } else {
+      let lowerSong;
+      if (req.body.songName) {
+        lowerSong = req.body.songName.toLowerCase();
+      }
       var temp = req.files[0].originalname;
       const writestream = gfs.createWriteStream({
         filename: temp, //filename to store in mongodb
         metadata: {
           username: req.session.passport.user,  //username from session, store more specs in here
-          songName: req.body.songName
+          songName: lowerSong
         }
       });
       fs.createReadStream(`./uploadTemp/${temp}`).pipe(writestream);  // open a stream so we can start reading uploads
@@ -27,10 +31,17 @@ module.exports = function(app, express, gfs, fsFile) {   // these params are are
   });
 
   app.post('/importSong', (req, res) => {
+    let lowerName, lowerSong;
+    if (req.body.username) {
+      lowerName = req.body.username.toLowerCase();
+    }
+    if (req.body.songName) {
+      lowerSong = req.body.songName;
+    }
     fsFile.find({
       filename: req.body.filename,
-      'metadata.username': req.body.username,
-      'metadata.songName': req.body.songName
+      'metadata.username': lowerName,
+      'metadata.songName': lowerSong
     }).then(data => { //search db
       if (!data[0]) {
         console.log('file not in db');
@@ -62,14 +73,21 @@ module.exports = function(app, express, gfs, fsFile) {   // these params are are
   });
 
   app.post('/updateSongName', passportFile.isLoggedIn, (req, res) => {
+    let lowerSong, temp;
+    if (req.body.songName) {
+      lowerSong = req.body.songName.toLowerCase();
+    }
+    if (req.body.newName) {
+      temp = req.body.newName;
+    }
     gfs.files.update(
       {
-        'metadata.songName': req.body.songName,
+        'metadata.songName': lowerSong,
         'metadata.username': req.session.passport.user
       },
       { 
         $set: {
-          'metadata.songName': req.body.newName
+          'metadata.songName': temp
         }
       }
     ).then(() => {
@@ -97,8 +115,12 @@ module.exports = function(app, express, gfs, fsFile) {   // these params are are
   });
 
   app.post('/getPublicCollection', (req, res) => {
+    let lowerName;
+    if (req.body.username) {
+      lowerName = req.body.username;
+    }
     fsFile.find({
-      'metadata.username': req.body.username
+      'metadata.username': lowerName
     }).then(data => {
       res.send(data);
     }).catch(err => {
@@ -111,7 +133,10 @@ module.exports = function(app, express, gfs, fsFile) {   // these params are are
  * the query.
  */
   app.post('/search', (req, res) => {
-    const query = req.body.query;
+    let query;
+    if (req.body.query) {
+      query = req.body.query.toLowerCase();
+    }
     var temp = {};
     fsFile.find({
       'metadata.songName': query

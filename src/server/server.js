@@ -42,7 +42,7 @@ require('./config/uploadFile.js')(app, express, gfs, fsFile);  // uploadFile.js 
 const port = process.env.PORT || 3300;
 app.listen(port);
 
-console.log('running on ', port);
+console.log('running on', port);
 ///////////////////////////////////////////////////////////////
 
 //-CLEAR IMPORTS PERIODICALLY

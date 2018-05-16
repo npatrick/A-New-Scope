@@ -46,8 +46,9 @@ const isLoggedIn = (req, res, next) => { //check session active
 */
 passport.use('login',
   new LocalStrategy((username, password, done) => {
+    const lowerName = username.toLowerCase();
     User.findOne({
-      'username': username
+      'username': lowerName
     }, (err, data) => {
       if (!data) {
         console.log('user not found');  
@@ -57,7 +58,7 @@ passport.use('login',
         console.log('invalid password');
         return done(null, false);
       } else {
-        return done(null, username);
+        return done(null, lowerName);
       }
     });
   })
@@ -72,19 +73,22 @@ a new event to execute, your nextTick'ed function will be there in the event que
 and execute on a whole new stack.
  */
 passport.use('signup', new LocalStrategy((username, password, done) => {
+  const lowerName = username.toLowerCase();
+  console.log('DID I GET A USERNAME?', lowerName);
   process.nextTick(() => {
-    User.find({'username': username}, (err, data) => {
+    User.find({'username': lowerName}, (err, data) => {
+      console.log('This line is clear')
       if (!data.length) {
         const temp = new User({ //create a new user to store in db
-          username
+          username: lowerName
         });
         temp.password = temp.generateHash(password);
         temp.save(err => {
           if (err) {
             throw err;
           }
-          console.log('registered user', username);
-          return done(null, username);
+          console.log('registered user', lowerName);
+          return done(null, lowerName);
         });
       } else {
         console.log('user already exists');
