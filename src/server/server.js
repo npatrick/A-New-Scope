@@ -17,10 +17,19 @@ const path = require('path');
 const app = express();
 
 //////////////////////////CONFIG////////////////////////////
-mongoose.connect('mongodb://localhost/tracks');
-const conn = mongoose.connection;
 Grid.mongo = mongoose.mongo;
-const gfs = Grid(conn.db);
+const mongoUri = 'mongodb://localhost/tracks'
+mongoose.connect(mongoUri, { useMongoClient: true });
+const conn = mongoose.connection;
+
+conn.on('error', console.error.bind(console, 'connection error: '));
+conn.once('open', () => {
+  const gfs = Grid(conn.db);
+  require('./config/uploadFile.js')(app, express, gfs, fsFile);  // uploadFile.js exports a function with 4 params
+  mongoose.Promise = global.Promise;
+  console.log('We are connected to DB!');
+});
+
 const fsFile = mongoose.model('fs.file', new mongoose.Schema());
 
 app.use(cookieParser()); // read cookies (needed for auth)
@@ -28,8 +37,7 @@ app.use(session({
   secret: 'secret',
   resave: true,
   saveUninitialized: true
-})
-);
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
@@ -37,7 +45,6 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '../client')));
 
 require('./config/router.js')(app, express);	// router.js file exports a function requiring these two arguments
-require('./config/uploadFile.js')(app, express, gfs, fsFile);  // uploadFile.js exports a function with 4 params
 
 const port = process.env.PORT || 3300;
 app.listen(port);

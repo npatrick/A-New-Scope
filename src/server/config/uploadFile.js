@@ -25,7 +25,11 @@ module.exports = function(app, express, gfs, fsFile) {   // these params are are
       fs.createReadStream(`./uploadTemp/${temp}`).pipe(writestream);  // open a stream so we can start reading uploads
       writestream.on('close', file => {
         console.log(`${file.filename} written To DB`);
-        fs.unlink(`./uploadTemp/${temp}`); // unlink() deletes a name from the filesystem and the space is made available for reuse
+        // unlink() deletes a name from the filesystem and the space is made available for reuse
+        fs.unlink(`./uploadTemp/${temp}`, (err) => {
+          if (err) throw err;
+          console.log(`./uploadTemp/${temp} was deleted`);
+        });
         res.redirect('/#/user');
       });
     }
@@ -66,11 +70,11 @@ module.exports = function(app, express, gfs, fsFile) {   // these params are are
 
   app.get('/getUserCollection', passportFile.isLoggedIn, (req, res) => {
     fsFile.find({'metadata.username': req.session.passport.user})
-    .then(data => {
-      res.send(data);
-    }).catch(err => {
-      throw err;
-    });
+      .then(data => {
+        res.send(data);
+      }).catch(err => {
+        throw err;
+      });
   });
 
   app.post('/updateSongName', passportFile.isLoggedIn, (req, res) => {
