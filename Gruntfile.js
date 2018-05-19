@@ -96,8 +96,7 @@ module.exports = function(grunt) {
 
       },
       production: {
-        NODE_ENV: 'production',
-        PORT: 3000
+        NODE_ENV: 'production'
       }
     },
 
@@ -145,6 +144,22 @@ module.exports = function(grunt) {
     ngAnnotate: {
       //TODO
       // needed in order to serve minifed JS with angular in it
+      options: {
+        singleQuotes: true
+      },
+      dist: {
+        files: [
+          {
+            expand: true,
+            src: [
+              'src/client/assets/scripts/**/*.js', 
+              '!**/*.annotated.js'
+            ],
+            ext: '.annotated.js',
+            extDot: 'last'
+          }
+        ],
+      }
     },
 
     nodemon: {
@@ -225,15 +240,26 @@ module.exports = function(grunt) {
     }
   });
 
+  // TODO: delete these after configuring them and registering them as tasks
+  grunt.loadNpmTasks('grunt-injector');
+  grunt.loadNpmTasks('grunt-babel');
+  grunt.loadNpmTasks('grunt-ng-annotate');
+  grunt.loadNpmTasks('grunt-concurrent');
+  grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-csslint');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-contrib-htmlmin');
+  grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-env');
+  grunt.loadNpmTasks('grunt-eslint');
+
   // TODO: register tasks
-  grunt.registerTask('default', ['dev']);
+  grunt.registerTask('default', ['uglify']);
   grunt.registerTask('dev', ['env:dev', 'injector:dev', 'concurrent:dev']);
   grunt.registerTask('test', ['eslint', 'csslint']);
-  grunt.registerTask('build', ['env:production', 'injector:dev', 'cssmin', 'ngAnnotate', 'babel', 'uglify', 'concat']);
+  grunt.registerTask('build', ['env:production', 'injector:dev', 'cssmin', 'ngAnnotate', 'babel', 'concat']);
   grunt.registerTask('upload', []);
   grunt.registerTask('deploy', ['test', 'build', 'upload']);
 
-  // TODO: delete these after configuring them and registering them as tasks
-  grunt.loadNpmTasks('grunt-injector');
 
 };
