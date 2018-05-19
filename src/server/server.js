@@ -2,6 +2,7 @@
 
 //TO DO
 //FLASH SUCCESS/FAILURE MESSAGES ON EDIT AND LOGIN/SIGNUP
+require('dotenv').config();
 
 /////////////////////////DEPENDENCIES///////////////////////
 const express = require('express');
@@ -17,9 +18,9 @@ const path = require('path');
 const app = express();
 
 //////////////////////////CONFIG////////////////////////////
+const mongoUri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@ds016298.mlab.com:16298/songspace`
+mongoose.connect(mongoUri, { useMongoClient: true, autoIndex: false });
 Grid.mongo = mongoose.mongo;
-const mongoUri = 'mongodb://localhost/tracks'
-mongoose.connect(mongoUri, { useMongoClient: true });
 const conn = mongoose.connection;
 
 conn.on('error', console.error.bind(console, 'connection error: '));
