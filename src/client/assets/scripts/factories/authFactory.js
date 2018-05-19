@@ -1,6 +1,6 @@
 angular.module('Factories', [])
 
-.factory('AuthFactory', function ($http, $state) {
+.factory('AuthFactory', function ($http, $state, $q) {
   let factory = {};
 
   factory.login = function(user, pass) {
@@ -11,8 +11,12 @@ angular.module('Factories', [])
     .then(function(res) {
       if (res) {
         $state.go('user');
+        return res;
       }
-    });
+    })
+    .catch(function(err) {
+      return err;
+    })
   };
 
   factory.logout = function() {
