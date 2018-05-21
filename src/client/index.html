@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="App">
+<html>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,53 +13,51 @@
 
 
   <!-- injector:css -->
-  <link rel="stylesheet" href="assets/styles/normalize.css">
-  <link rel="stylesheet" href="assets/styles/styles.css">
-  <!-- endinjector -->
-  <!-- injector:js -->
-  <script src="assets/lib/audio.js"></script>
-  <script src="assets/lib/draggableScene.js"></script>
-  <script src="assets/lib/orbit.js"></script>
-  <script src="assets/scripts/factories/authFactory.js"></script>
-  <script src="assets/scripts/factories/navFactory.js"></script>
-  <script src="assets/scripts/factories/pictureFactory.js"></script>
-  <script src="assets/scripts/factories/searchFactory.js"></script>
-  <script src="assets/scripts/factories/songFactory.js"></script>
-  <script src="assets/scripts/factories/userFactory.js"></script>
-  <script src="assets/scripts/controllers/auth.js"></script>
-  <script src="assets/scripts/controllers/edit.js"></script>
-  <script src="assets/scripts/controllers/profile.js"></script>
-  <script src="assets/scripts/controllers/search.js"></script>
-  <script src="assets/scripts/controllers/user.js"></script>
-  <script src="assets/scripts/app.js"></script>
+  <link rel="stylesheet" href="/assets/styles/normalize.css">
+  <link rel="stylesheet" href="/assets/styles/styles.css">
   <!-- endinjector -->
 </head>
 <body>
-<h1 class = "logo">songspace</h1>
-<div class="nav">
-  <div class="header">
-    <h2><a ui-sref="search">search </a>
-    -
-    <a ui-sref="user">dashboard</a>
-    <div id="audio"></div>
-    </h2>
+  <div ng-app="App" ng-strict-di>
+    <h1 class = "logo">songspace</h1>
+    <div class="nav">
+      <div class="header">
+        <h2><a ui-sref="search">search </a>
+        -
+        <a ui-sref="user">dashboard</a>
+        <div id="audio"></div>
+        </h2>
+      </div>
+      <br />
+      <br />
+      <div class="view" ui-view></div>
+    </div>
+
+    <div class="controls">
+    <br />
+    <strong>/ key</strong> - toggle play
+    <br />
+    <strong>\ key</strong> - reset cubes
+    <br />
+    click and drag to move
+    </div>
+
+    <div id="scene"></div>
   </div>
-  <br />
-  <br />
-  <div class="view" ui-view></div>
-</div>
-
-<div class="controls">
-<br />
-<strong>/ key</strong> - toggle play
-<br />
-<strong>\ key</strong> - reset cubes
-<br />
-click and drag to move
-</div>
-
-<div id="scene"></div>
-<script src="assets/lib/draggableScene.js"></script>
+  <script type="text/javascript" src="/assets/lib/audio.js"></script>
+  <script type="text/javascript" src="/assets/lib/draggableScene.js"></script>
+  <script type="text/javascript" src="/assets/lib/orbit.js"></script>
+  <script type="text/javascript" src="/assets/scripts/annotated/src/client/assets/scripts/factories/authFactory.annotated.js"></script>
+  <script type="text/javascript" src="/assets/scripts/annotated/src/client/assets/scripts/factories/navFactory.annotated.js"></script>
+  <script type="text/javascript" src="/assets/scripts/annotated/src/client/assets/scripts/factories/searchFactory.annotated.js"></script>
+  <script type="text/javascript" src="/assets/scripts/annotated/src/client/assets/scripts/factories/songFactory.annotated.js"></script>
+  <script type="text/javascript" src="/assets/scripts/annotated/src/client/assets/scripts/factories/userFactory.annotated.js"></script>
+  <script type="text/javascript" src="/assets/scripts/annotated/src/client/assets/scripts/controllers/auth.annotated.js"></script>
+  <script type="text/javascript" src="/assets/scripts/annotated/src/client/assets/scripts/controllers/edit.annotated.js"></script>
+  <script type="text/javascript" src="/assets/scripts/annotated/src/client/assets/scripts/controllers/profile.annotated.js"></script>
+  <script type="text/javascript" src="/assets/scripts/annotated/src/client/assets/scripts/controllers/search.annotated.js"></script>
+  <script type="text/javascript" src="/assets/scripts/annotated/src/client/assets/scripts/controllers/user.annotated.js"></script>
+  <script type="text/javascript" src="/assets/scripts/annotated/src/client/assets/scripts/app.annotated.js"></script>
 
 </body>
 </html>

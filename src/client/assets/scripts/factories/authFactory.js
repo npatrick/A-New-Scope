@@ -1,6 +1,6 @@
 angular.module('Factories', [])
 
-.factory('AuthFactory', function ($http, $state, $q) {
+.factory('AuthFactory', function ($http, $state) {
   let factory = {};
 
   factory.login = function(user, pass) {

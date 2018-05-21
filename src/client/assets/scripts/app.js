@@ -2,7 +2,7 @@ angular.module('App', ['ui.router', 'Factories', 'Controllers'])
 
 .config(function($stateProvider, $urlRouterProvider) {
 
-  let checkSession = function ($state, $http) {
+  var checkSession = function ($state, $http) {
     $http.get('/auth')
     .then(function(res) {
       if (res.data.length > 0) {

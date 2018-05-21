@@ -25,7 +25,7 @@
     //generate cubes
     var geometry = new THREE.BoxBufferGeometry( 20, 20, 20 );
     for ( var i = 0; i < 5; i ++ ) {
-      var object = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({color: 00000000, transparent: true, opacity: 0.8}) );
+      var object = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({color: 0, transparent: true, opacity: 0.8}) );
       object.position.x = 0;
       object.position.y = 0;
       object.position.z = 0;
@@ -43,7 +43,9 @@
     renderer.sortObjects = false;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap;
-    document.body.appendChild( renderer.domElement );
+    if (document.body) {
+      document.body.appendChild( renderer.domElement );
+    }
 
     //add listeners
     renderer.domElement.addEventListener( 'mousemove', onDocumentMouseMove, false );
@@ -74,7 +76,7 @@
     var intersects = raycaster.intersectObjects(scene.children );
     if ( intersects.length > 0 ) {
       if ( INTERSECTED != intersects[ 0 ].object ) {
-        if ( INTERSECTED ) {INTERSECTED.material.color.set(00000000)};
+        if ( INTERSECTED ) {INTERSECTED.material.color.set(0)};
         INTERSECTED = intersects[ 0 ].object;
         INTERSECTED.material.color.set( 0xff0000 );
         plane.setFromNormalAndCoplanarPoint(
@@ -82,7 +84,7 @@
           INTERSECTED.position );
       }
     } else {
-      if ( INTERSECTED ) {INTERSECTED.material.color.set(00000000)};
+      if ( INTERSECTED ) {INTERSECTED.material.color.set(0)};
       INTERSECTED = null;
     }
   }

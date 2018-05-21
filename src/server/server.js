@@ -43,7 +43,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, '../client')));
+app.use(express.static(path.join(__dirname, '../client/'))); // dev
+// app.use(express.static(path.join(__dirname, '../../dist/'))); // prod
 
 require('./config/router.js')(app, express);	// router.js file exports a function requiring these two arguments
 
