@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node ./src/server/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "grunt dev",
     "postinstall": "grunt build"
   },
   "repository": {

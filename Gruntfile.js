@@ -20,17 +20,21 @@ module.exports = function(grunt) {
           expand: true,
           cwd: 'src/client/assets',
           src: [
+            'lib/*.js',
+            '!lib/scene.js',
             'scripts/*.js',
+            'scripts/factories/*.js',
+            'scripts/controllers/*.js',
             '!scripts/babelified',
             '!scripts/minified',
             'views/**/*.js',
             '!*.min.js'
           ],
-          dest: 'src/client/assets/scripts/babelified',
+          dest: 'src/client/assets/scripts/babelified'
         }]
       }
     },
-    
+
     concat: {
       options: {
         separator: ';\n'
@@ -105,7 +109,7 @@ module.exports = function(grunt) {
       // in production, inject the right CSS and JS
       dev: {
         options: {
-          relative: true,
+          relative: true
         },
         files: {
           'src/client/index.html': [
@@ -114,7 +118,7 @@ module.exports = function(grunt) {
             'src/client/assets/scripts/factories/*.js',
             'src/client/assets/scripts/controllers/*.js',
             'src/client/assets/scripts/app.js',
-            'src/client/assets/styles/*.css',
+            'src/client/assets/styles/*.css'
           ]
         }
       },
@@ -122,22 +126,50 @@ module.exports = function(grunt) {
       // when working, "grunt build" should replace injector:dev
       // with injector:dist
       dist: {
-        files: {
-          'src/client/index.html': [
-            'dist/*.min.js',
-            'dist/*.min.css'
-          ]
-        }
+        options: {
+          destFile: 'src/client/index.html',
+          ignorePath: 'dist/'
+        },
+        files: [{
+          expand: true,
+          cwd: 'src/client/assets/',
+          // src: ['*.min.js', '*.min.css'],
+          src: [
+          'scripts/annotated/src/client/assets/lib/*.js',
+          '!scripts/annotated/src/client/assets/lib/scene.js',
+          'scripts/annotated/src/client/assets/scripts/factories/*.js',
+          'scripts/annotated/src/client/assets/scripts/controllers/*.js',
+          '!scripts/annotated/src/client/assets/scripts/babelified',
+          '!scripts/annotated/src/client/assets/scripts/minified',
+          'scripts/annotated/src/client/assets/scripts/*.js',
+          'styles/*.css'
+          ],
+          dest: '../src/client'
+        }]
       }
     },
 
     htmlmin: {
-      options: {
         // TODO: add minify rules, see here
         // https://github.com/kangax/html-minifier#options-quick-reference
-      },
       dist: {
-        'dist/index.html': 'src/client/index.html'
+        options: {
+          collapseWhitespace: true
+        },
+        files: [{
+          expand: true,
+          cwd: 'src/client',
+          src: ['index.html', 'assets/views/*.html'],
+          dest: 'dist'
+        }]
+      },
+      dev: {
+        files: [{
+          expand: true,
+          cwd: 'src/client',
+          src: ['index.html', 'assets/views/*.html'],
+          dest: 'dist'
+        }]
       }
     },
 
@@ -152,9 +184,10 @@ module.exports = function(grunt) {
           {
             expand: true,
             src: [
-              'src/client/assets/scripts/**/*.js', 
+              'src/client/assets/scripts/babelified/**/*.js', 
               '!**/*.annotated.js'
             ],
+            dest: 'src/client/assets/scripts/annotated',
             ext: '.annotated.js',
             extDot: 'last'
           }
@@ -201,7 +234,7 @@ module.exports = function(grunt) {
       target: {
         files: [{
           expand: true,
-          cwd: 'src/client/assets/scripts/babelified',
+          cwd: 'src/client/assets/scripts/annotated',
           src: ['**/*.js', '!*.min.js'],
           dest: 'src/client/assets/scripts/minified',
           ext: '.min.js'
@@ -227,7 +260,7 @@ module.exports = function(grunt) {
       scripts: {
         files: [
           'src/client/assets/scripts/*.js',
-          'src/client/assets/views/**/*.js',
+          'src/client/assets/views/**/*.html',
           '!src/client/assets/scripts/minified/*.min.js',
           '!src/client/assets/scripts/babelified/*.js'
         ],
@@ -240,10 +273,9 @@ module.exports = function(grunt) {
     }
   });
 
-  // TODO: delete these after configuring them and registering them as tasks
-  grunt.loadNpmTasks('grunt-injector');
   grunt.loadNpmTasks('grunt-babel');
   grunt.loadNpmTasks('grunt-ng-annotate');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-concurrent');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-csslint');
@@ -252,12 +284,15 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-env');
   grunt.loadNpmTasks('grunt-eslint');
+  // TODO: delete these after configuring them and registering them as tasks
+  grunt.loadNpmTasks('grunt-injector');
 
   // TODO: register tasks
-  grunt.registerTask('default', ['uglify']);
+  grunt.registerTask('default', ['dev']);
   grunt.registerTask('dev', ['env:dev', 'injector:dev', 'concurrent:dev']);
   grunt.registerTask('test', ['eslint', 'csslint']);
-  grunt.registerTask('build', ['env:production', 'injector:dev', 'cssmin', 'ngAnnotate', 'babel', 'concat']);
+  // removcal of 'injector:dist', 'uglify' & 'concat'
+  grunt.registerTask('build', ['env:production', 'cssmin', 'babel', 'ngAnnotate', 'htmlmin']);
   grunt.registerTask('upload', []);
   grunt.registerTask('deploy', ['test', 'build', 'upload']);
 
